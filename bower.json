@@ -1,0 +1,24 @@
+{
+  "name": "react-valence-ui-iframe",
+  "description": "An iframe wrapper which provides callbacks for when the iframe has loaded and callbacks providing the size of the iframe's contents if we can figure them out",
+  "main": "react-valence-ui-iframe.js",
+  "authors": [
+    "D2L"
+  ],
+  "license": "Apache-2.0",
+  "keywords": [
+    "iframe",
+    "valence",
+    "react"
+  ],
+  "moduleType": [],
+  "homepage": "",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}
