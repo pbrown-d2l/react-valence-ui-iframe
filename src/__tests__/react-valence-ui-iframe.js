@@ -58,14 +58,13 @@ describe('react-valence-ui-iframe', function() {
 		expect(elem.state.iframeCleanup).toBe(cleanupStub);
 	});
 
-	it('callbackWrapper should set the iframeOverflowY and minHeight state values', function() {
+	it('callbackWrapper should set the iframeOverflowY value', function() {
 		var callback = sinon.stub();
 		var height = 10;
 		var iframeOverflowY = 'hidden';
 		var elem = TestUtils.renderIntoDocument(<ReactIframe resizeCallback={callback}/>);
 		elem.callbackWrapper(height, iframeOverflowY);
 
-		expect(elem.state.minHeight).toBe(height - 1);
 		expect(elem.state.iframeOverflowY).toBe(iframeOverflowY);
 	});
 
@@ -76,7 +75,7 @@ describe('react-valence-ui-iframe', function() {
 		var elem = TestUtils.renderIntoDocument(<ReactIframe resizeCallback={callback}/>);
 		elem.callbackWrapper(height);
 
-		expect(callback.calledWith(height - 1, sizeKnown)).toBe(true);
+		expect(callback.calledWith(height, sizeKnown)).toBe(true);
 	});
 
 	it('callbackWrapper should call the resizeCallback with null and sizeKnown = false if the height is null', function() {
@@ -109,18 +108,5 @@ describe('react-valence-ui-iframe', function() {
 		);
 
 		expect(React.findDOMNode(wrapper).style['overflow-y']).toBe(iframeOverflowY);
-	});
-
-	it('should set minHeight on the iframe container if minHeight state is set', function() {
-		var minHeight = '10px';
-		var elem = TestUtils.renderIntoDocument(<ReactIframe />);
-		elem.setState({minHeight: minHeight});
-
-		var wrapper = TestUtils.findRenderedDOMComponentWithClass(
-			elem,
-			'resizing-iframe-container'
-		);
-
-		expect(React.findDOMNode(wrapper).style['min-height']).toBe(minHeight);
 	});
 });

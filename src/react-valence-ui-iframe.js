@@ -12,8 +12,7 @@ var ResizingIframe = React.createClass({
 	getInitialState: function() {
 		return {
 			iframeCleanup: null,
-			iframeOverflowY: null,
-			minHeight: null
+			iframeOverflowY: null
 		};
 	},
 	componentDidMount: function() {
@@ -25,11 +24,8 @@ var ResizingIframe = React.createClass({
 		}
 	},
 	callbackWrapper: function(height, iframeOverflowY) {
-		if (height) { height--; }
-
 		this.setState({
-			iframeOverflowY: iframeOverflowY,
-			minHeight: height
+			iframeOverflowY: iframeOverflowY
 		});
 
 		var sizeKnown = !!height;
@@ -58,14 +54,9 @@ var ResizingIframe = React.createClass({
 			overflowY: this.state.iframeOverflowY || ''
 		};
 
-		var containerStyle = {
-			minHeight: this.state.minHeight || ''
-		};
-
 		return (
 			<div
 				className="resizing-iframe-container"
-				style={containerStyle}
 			>
 				<iframe
 					ref="iframe"

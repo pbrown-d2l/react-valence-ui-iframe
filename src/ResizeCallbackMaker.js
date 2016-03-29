@@ -33,10 +33,13 @@ ResizeCallbackMaker.prototype.doCallback = function(toggle, callback, iframe, la
 			setTimeout(function() { self.doCallback(toggle, callback, iframe, currentHtml, currentWidth); }, pollingInterval);
 			return;
 		}
-		// Set the style to 'auto' before doing anything so that the iframe will pick up shrinking
+
+		// Set the style to an arbitrary small size before doing anything so that the iframe will pick up shrinking
 		// May cause a blip in the iframe's rendering area, which is why we only resize when the html or width change
-		iframe.style.height = 'auto';
+		iframe.style.height = '50px';
+		iframe.style['min-height'] = '0';
 		height = this.getHeightFromSameOriginIframe(iframe);
+		iframe.style.height = null;
 		callback(height, null);
 	} catch (e) {
 		callback(null, null);
