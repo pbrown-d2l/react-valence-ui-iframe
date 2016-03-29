@@ -55,11 +55,11 @@ var ResizingIframe = React.createClass({
 	},
 	render: function() {
 		var style = {
-			overflowY: (this.state.iframeOverflowY) ? this.state.iframeOverflowY : ''
+			overflowY: this.state.iframeOverflowY || ''
 		};
 
 		var containerStyle = {
-			minHeight: (this.state.minHeight) ? this.state.minHeight : ''
+			minHeight: this.state.minHeight || ''
 		};
 
 		return (
