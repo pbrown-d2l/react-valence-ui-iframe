@@ -92,6 +92,16 @@ describe('react-valence-ui-iframe', function() {
 				expect(returnVal.security).toBe('sameDomain');
 				expect(returnVal.cleanup !== null).toBe(true);
 			});
+
+			it('returns a cleanup function which sets "toggle.resize" to false', function() {
+				sandbox.stub(ResizeCallbackMaker, 'requestIframeSize');
+				sandbox.stub(ResizeCallbackMaker, 'doCallback');
+
+				var returnVal = ResizeCallbackMaker.startResizingCallbacks(iframe, callback);
+				var toggle = ResizeCallbackMaker.doCallback.firstCall.args[0].toggle;
+				returnVal.cleanup();
+				expect(toggle.resize).toBe(false);
+			});
 		});
 	});
 
@@ -267,7 +277,7 @@ describe('react-valence-ui-iframe', function() {
 	describe('doCallback', function() {
 		it('does not call the callback if toggle.resize is false', function() {
 			var toggle = { resize: false };
-			ResizeCallbackMaker.doCallback(toggle, callback, iframe);
+			ResizeCallbackMaker.doCallback({ toggle: toggle, callback: callback, iframe: iframe });
 			expect(callback.called).toBe(false);
 		});
 
@@ -275,7 +285,7 @@ describe('react-valence-ui-iframe', function() {
 			var toggle = { resize: true };
 			sandbox.stub(ResizeCallbackMaker, 'checkForLegacyFrameSets').returns(true);
 
-			ResizeCallbackMaker.doCallback(toggle, callback, iframe);
+			ResizeCallbackMaker.doCallback({ toggle: toggle, callback: callback, iframe: iframe });
 			expect(callback.calledWith(null, null)).toBe(true);
 		});
 
@@ -292,7 +302,11 @@ describe('react-valence-ui-iframe', function() {
 					style: {}
 				}}}
 			};
-			ResizeCallbackMaker.doCallback(toggle, callback, testIframe, bodyHtml, width);
+
+			ResizeCallbackMaker.doCallback(
+				{ toggle: toggle, callback: callback, iframe: testIframe },
+				{ lastHtml: bodyHtml, lastWidth: width }
+			);
 			toggle.resize = false;
 			expect(callback.called).toBe(false);
 		});
@@ -311,15 +325,30 @@ describe('react-valence-ui-iframe', function() {
 					style: {}
 				}}}
 			};
-			ResizeCallbackMaker.doCallback(toggle, callback, testIframe);
+			ResizeCallbackMaker.doCallback({ toggle: toggle, callback: callback, iframe: testIframe });
 			toggle.resize = false;
 			expect(callback.calledWith(height, null)).toBe(true);
 		});
 
 		it('calls the callback with null,null if an error is thrown', function() {
 			sandbox.stub(ResizeCallbackMaker, 'checkForLegacyFrameSets').throws();
-			ResizeCallbackMaker.doCallback({resize: true}, callback, iframe);
+			ResizeCallbackMaker.doCallback({ toggle: {resize: true}, callback: callback, iframe: iframe });
 			expect(callback.calledWith(null, null)).toBe(true);
+		});
+
+		it("sets the iframe body's overflowY style to auto if an error is thrown so that it's scrollbar won't be hidden", function() {
+			sandbox.stub(ResizeCallbackMaker, 'checkForLegacyFrameSets').returns(false);
+
+			var testIframe = {
+				style: { height: '123' },
+				getBoundingClientRect: function() { throw 'error'; },
+				contentWindow: { document: { body: {
+					outerHTML: '<a></a>',
+					style: {}
+				}}}
+			};
+			ResizeCallbackMaker.doCallback({ toggle: {resize: true}, callback: callback, iframe: testIframe });
+			expect(testIframe.contentWindow.document.body.style.overflowY).toBe('auto');
 		});
 	});
 });

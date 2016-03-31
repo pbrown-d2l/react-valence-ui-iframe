@@ -37,3 +37,7 @@ progressCallback ( progress, accuracy )
 
 `accuracy`
 - `'none'`, because it doesn't provide values than 0 and 100
+
+## Usage Example:
+
+- https://github.com/Brightspace/activity-viewer

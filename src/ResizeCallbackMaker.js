@@ -6,50 +6,55 @@ var id = 10;
 
 function ResizeCallbackMaker() {}
 
-ResizeCallbackMaker.prototype.doCallback = function(toggle, callback, iframe, lastHtml, lastWidth) {
+ResizeCallbackMaker.prototype.doCallback = function(props, stateParam) {
 	var height, body = null;
 	var pollingInterval = 500;
 	var self = this;
+	var state = stateParam || {};
 
-	if (!toggle.resize) {
+	if (!props.toggle.resize) {
 		return;
 	}
 
 	try {
-		if (this.checkForLegacyFrameSets(iframe)) {
-			callback(null, null);
+		if (this.checkForLegacyFrameSets(props.iframe)) {
+			props.callback(null, null);
 			return;
 		}
 
-		body = iframe.contentWindow.document.body;
+		body = props.iframe.contentWindow.document.body;
 		body.style.overflowY = 'hidden';
 
 		// Note that neither events or mutationobserver were correctly detecting changes in all scenarios but outerHTML was hence what we have here
 		var currentHtml = body.outerHTML,
-			clientRect = iframe.getBoundingClientRect(),
+			clientRect = props.iframe.getBoundingClientRect(),
 			currentWidth = clientRect.right - clientRect.left;
 
-		if (currentHtml == lastHtml && currentWidth === lastWidth) { // eslint-disable-line eqeqeq
-			setTimeout(function() { self.doCallback(toggle, callback, iframe, currentHtml, currentWidth); }, pollingInterval);
+		if (currentHtml == state.lastHtml && currentWidth === state.lastWidth) { // eslint-disable-line eqeqeq
+			var newState = {
+				lastHtml: currentHtml,
+				lastWidth: currentWidth
+			};
+			setTimeout(function() { self.doCallback(props, newState); }, pollingInterval);
 			return;
 		}
 
 		// Set the style to an arbitrary small size before doing anything so that the iframe will pick up shrinking
 		// May cause a blip in the iframe's rendering area, which is why we only resize when the html or width change
-		iframe.style.height = '50px';
-		iframe.style['min-height'] = '0';
-		height = this.getHeightFromSameOriginIframe(iframe);
-		iframe.style.height = null;
-		callback(height, null);
+		props.iframe.style.height = '50px';
+		props.iframe.style['min-height'] = '0';
+		height = this.getHeightFromSameOriginIframe(props.iframe);
+		props.iframe.style.height = null;
+		props.callback(height, null);
 	} catch (e) {
-		callback(null, null);
+		props.callback(null, null);
 
 		if (body) {
 			body.style.overflowY = 'auto';
 		}
 	}
 
-	setTimeout(function() { self.doCallback(toggle, callback, iframe, currentHtml, currentWidth); }, pollingInterval);
+	setTimeout(function() { self.doCallback(props, state); }, pollingInterval);
 };
 
 ResizeCallbackMaker.prototype.getHeightFromSameOriginIframe = function(iframe) {
@@ -58,7 +63,7 @@ ResizeCallbackMaker.prototype.getHeightFromSameOriginIframe = function(iframe) {
 		bodyHeight = this.getElementHeight(body),
 		docElement = iframe.contentWindow.document.documentElement,
 		docElementHeight = (docElement) ? this.getElementHeight(docElement) : 0,
-		innerHeight = iframe.contentWindow.innerHeight ? iframe.contentWindow.innerHeight : 0,
+		innerHeight = iframe.contentWindow.innerHeight || 0,
 		height = Math.max(bodyHeight, docElementHeight, innerHeight);
 
 	return height;
@@ -124,13 +129,17 @@ ResizeCallbackMaker.prototype.startResizingCallbacks = function(iframe, callback
 			cleanup: stopListening
 		};
 	} else {
-		var toggle = { resize: true };
-		this.doCallback(toggle, callback, iframe);
+		var props = {
+			toggle: { resize: true },
+			callback: callback,
+			iframe: iframe
+		};
+		this.doCallback(props);
 
 		return {
 			security: 'sameDomain',
 			cleanup: function() {
-				toggle.resize = false;
+				props.toggle.resize = false;
 			}
 		};
 	}
