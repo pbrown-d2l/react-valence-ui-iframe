@@ -1,8 +1,5 @@
 # react-valence-ui-iframe
 
-[![Build status][ci-image]][ci-url]
-[![Coverage Status][coverage-image]][coverage-url]
-
 A wrapper for the iframe which provides callbacks for various purposes
 
 ## Props
