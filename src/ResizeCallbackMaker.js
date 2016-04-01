@@ -12,7 +12,7 @@ ResizeCallbackMaker.prototype.doCallback = function(props, stateParam) {
 	var self = this;
 	var state = stateParam || {};
 
-	if (!props.toggle.resize) {
+	if (!props.toggle) {
 		return;
 	}
 
@@ -130,7 +130,7 @@ ResizeCallbackMaker.prototype.startResizingCallbacks = function(iframe, callback
 		};
 	} else {
 		var props = {
-			toggle: { resize: true },
+			toggle: true,
 			callback: callback,
 			iframe: iframe
 		};
@@ -139,7 +139,7 @@ ResizeCallbackMaker.prototype.startResizingCallbacks = function(iframe, callback
 		return {
 			security: 'sameDomain',
 			cleanup: function() {
-				props.toggle.resize = false;
+				props.toggle = false;
 			}
 		};
 	}

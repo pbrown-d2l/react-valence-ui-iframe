@@ -93,14 +93,14 @@ describe('react-valence-ui-iframe', function() {
 				expect(returnVal.cleanup !== null).toBe(true);
 			});
 
-			it('returns a cleanup function which sets "toggle.resize" to false', function() {
+			it('returns a cleanup function which sets toggle to false', function() {
 				sandbox.stub(ResizeCallbackMaker, 'requestIframeSize');
 				sandbox.stub(ResizeCallbackMaker, 'doCallback');
 
 				var returnVal = ResizeCallbackMaker.startResizingCallbacks(iframe, callback);
-				var toggle = ResizeCallbackMaker.doCallback.firstCall.args[0].toggle;
 				returnVal.cleanup();
-				expect(toggle.resize).toBe(false);
+				var toggle = ResizeCallbackMaker.doCallback.firstCall.args[0].toggle;
+				expect(toggle).toBe(false);
 			});
 		});
 	});
@@ -275,14 +275,14 @@ describe('react-valence-ui-iframe', function() {
 	});
 
 	describe('doCallback', function() {
-		it('does not call the callback if toggle.resize is false', function() {
-			var toggle = { resize: false };
+		it('does not call the callback if toggle is false', function() {
+			var toggle = false;
 			ResizeCallbackMaker.doCallback({ toggle: toggle, callback: callback, iframe: iframe });
 			expect(callback.called).toBe(false);
 		});
 
 		it('calls the callback with null,null if there are legacy framesets in the document', function() {
-			var toggle = { resize: true };
+			var toggle = true;
 			sandbox.stub(ResizeCallbackMaker, 'checkForLegacyFrameSets').returns(true);
 
 			ResizeCallbackMaker.doCallback({ toggle: toggle, callback: callback, iframe: iframe });
@@ -291,7 +291,7 @@ describe('react-valence-ui-iframe', function() {
 
 		it('does not call the callback if the iframe has not changed html or size', function() {
 			sandbox.stub(ResizeCallbackMaker, 'checkForLegacyFrameSets').returns(false);
-			var toggle = { resize: true };
+			var toggle = true;
 
 			var bodyHtml = '<a></a>';
 			var width = 500;
@@ -302,18 +302,18 @@ describe('react-valence-ui-iframe', function() {
 					style: {}
 				}}}
 			};
-
+			var props = { toggle: toggle, callback: callback, iframe: testIframe };
 			ResizeCallbackMaker.doCallback(
-				{ toggle: toggle, callback: callback, iframe: testIframe },
+				props,
 				{ lastHtml: bodyHtml, lastWidth: width }
 			);
-			toggle.resize = false;
+			props.toggle = false;
 			expect(callback.called).toBe(false);
 		});
 
 		it('calls the callback with the height returned from getHeightFromSameOriginIframe', function() {
 			sandbox.stub(ResizeCallbackMaker, 'checkForLegacyFrameSets').returns(false);
-			var toggle = { resize: true };
+			var toggle = true;
 			var height = 500;
 			sandbox.stub(ResizeCallbackMaker, 'getHeightFromSameOriginIframe').returns(height);
 
@@ -325,8 +325,9 @@ describe('react-valence-ui-iframe', function() {
 					style: {}
 				}}}
 			};
-			ResizeCallbackMaker.doCallback({ toggle: toggle, callback: callback, iframe: testIframe });
-			toggle.resize = false;
+			let props = { toggle: toggle, callback: callback, iframe: testIframe };
+			ResizeCallbackMaker.doCallback(props);
+			props.toggle = false;
 			expect(callback.calledWith(height, null)).toBe(true);
 		});
 
@@ -347,7 +348,7 @@ describe('react-valence-ui-iframe', function() {
 					style: {}
 				}}}
 			};
-			ResizeCallbackMaker.doCallback({ toggle: {resize: true}, callback: callback, iframe: testIframe });
+			ResizeCallbackMaker.doCallback({ toggle: true, callback: callback, iframe: testIframe });
 			expect(testIframe.contentWindow.document.body.style.overflowY).toBe('auto');
 		});
 	});
