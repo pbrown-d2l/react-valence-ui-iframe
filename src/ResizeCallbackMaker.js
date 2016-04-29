@@ -45,6 +45,7 @@ ResizeCallbackMaker.prototype.doCallback = function(props, stateParam) {
 		props.iframe.style['min-height'] = '0';
 		height = this.getHeightFromSameOriginIframe(props.iframe);
 		props.iframe.style.height = null;
+		props.iframe.style['min-height'] = null;
 		props.callback(height, null);
 	} catch (e) {
 		props.callback(null, null);
