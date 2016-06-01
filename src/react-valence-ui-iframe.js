@@ -17,6 +17,7 @@ var ResizingIframe = React.createClass({
 	},
 	componentDidMount: function() {
 		this.updateProgress(0);
+		this.removeIFrameNavbar();
 	},
 	updateProgress: function(progress) {
 		if (this.props.progressCallback) {
@@ -33,6 +34,7 @@ var ResizingIframe = React.createClass({
 	},
 	handleOnLoad: function() {
 		this.updateProgress(100);
+		this.removeIFrameNavbar();
 
 		if (this.props.resizeCallback) {
 			var result = ResizeCallbackMaker.startResizingCallbacks(React.findDOMNode(this.refs.iframe), this.callbackWrapper);
@@ -41,6 +43,22 @@ var ResizingIframe = React.createClass({
 				this.setState({
 					iframeCleanup: result.cleanup
 				});
+			}
+		}
+	},
+	removeIFrameNavbar: function() {
+		// Remove the navbar and minibar from within the iframe if it is rendered
+		var iframe = React.findDOMNode(this.refs.iframe);
+		if (iframe) {
+			// Can only manipulate the iframe if it is not cross domain
+			if (!ResizeCallbackMaker.crossDomain(iframe)) {
+				var iframeDocument = iframe.contentWindow.document;
+				if (iframeDocument) {
+					var navbar = iframeDocument.getElementById('d2l_navbar');
+					if (navbar) {
+						navbar.parentNode.remove();
+					}
+				}
 			}
 		}
 	},
