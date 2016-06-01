@@ -17,7 +17,10 @@ var ResizingIframe = React.createClass({
 	},
 	componentDidMount: function() {
 		this.updateProgress(0);
-		this.removeIFrameNavbar();
+		this.updateNavbarStyle();
+	},
+	componentDidUpdate: function() {
+		this.updateNavbarStyle();
 	},
 	updateProgress: function(progress) {
 		if (this.props.progressCallback) {
@@ -34,7 +37,6 @@ var ResizingIframe = React.createClass({
 	},
 	handleOnLoad: function() {
 		this.updateProgress(100);
-		this.removeIFrameNavbar();
 
 		if (this.props.resizeCallback) {
 			var result = ResizeCallbackMaker.startResizingCallbacks(React.findDOMNode(this.refs.iframe), this.callbackWrapper);
@@ -46,17 +48,21 @@ var ResizingIframe = React.createClass({
 			}
 		}
 	},
-	removeIFrameNavbar: function() {
-		// Remove the navbar and minibar from within the iframe if it is rendered
+	updateNavbarStyle: function() {
+		// Hide the navbar and minibar from within the iframe if it is rendered
 		var iframe = React.findDOMNode(this.refs.iframe);
 		if (iframe) {
 			// Can only manipulate the iframe if it is not cross domain
 			if (!ResizeCallbackMaker.crossDomain(iframe)) {
 				var iframeDocument = iframe.contentWindow.document;
 				if (iframeDocument) {
-					var navbar = iframeDocument.getElementById('d2l_navbar');
-					if (navbar) {
-						navbar.parentNode.remove();
+					// Overwrite css style for navbar and minibar when page is rendered
+					var iframeStyle = document.createElement('style');
+					iframeStyle.innerHTML = '.d2l-navbar, .d2l-minibar-placeholder {display:none;}';
+					iframeStyle.type = 'text/css';
+					var head = iframeDocument.head;
+					if (head) {
+						head.appendChild(iframeStyle);
 					}
 				}
 			}
