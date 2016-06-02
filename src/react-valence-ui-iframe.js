@@ -51,23 +51,24 @@ var ResizingIframe = React.createClass({
 	updateNavbarStyle: function() {
 		// Hide the navbar and minibar from within the iframe if it is rendered
 		var iframe = React.findDOMNode(this.refs.iframe);
-		// Only update if the frame location has changed
-		if (this.state.iframeLocation !== iframe.contentWindow.location.href) {
-			// Can only manipulate the iframe if it is not cross domain
-			if (!ResizeCallbackMaker.crossDomain(iframe)) {
-				var iframeDocument = iframe.contentWindow.document;
-				if (iframeDocument) {
-					// Overwrite css style for navbar and minibar when page is rendered
-					var iframeStyle = document.createElement('style');
-					iframeStyle.innerHTML = '.d2l-navbar, .d2l-minibar-placeholder {display:none;}';
-					iframeStyle.type = 'text/css';
-					var head = iframeDocument.head;
-					if (head) {
-						head.appendChild(iframeStyle);
-					}
+		// Should only manipulate the iframe if it is not cross domain and the iframe location has changed
+		if (!ResizeCallbackMaker.crossDomain(iframe) &&
+		(this.state.iframeLocation !== iframe.contentWindow.location.href)) {
+
+			var iframeDocument = iframe.contentWindow.document;
+			if (iframeDocument) {
+				// Overwrite css style for navbar and minibar when page is rendered
+				var iframeStyle = document.createElement('style');
+				iframeStyle.innerHTML = '.d2l-navbar, .d2l-minibar-placeholder {display:none;}';
+				iframeStyle.type = 'text/css';
+				var head = iframeDocument.head;
+				if (head) {
+					head.appendChild(iframeStyle);
 				}
 			}
-			this.state.ifreamLocation = iframe.contentWindow.location.href;
+			this.setState({
+				iframeLocation: iframe.contentWindow.location.href
+			});
 		}
 	},
 	componentWillUnmount: function() {
