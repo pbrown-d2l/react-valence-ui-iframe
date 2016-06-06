@@ -7,11 +7,13 @@ var React = require('react/addons'),
 
 describe('react-valence-ui-iframe', function() {
 	var resizeCallbackMakerStub,
-		cleanupStub;
+		cleanupStub,
+		crossDomainStub;
 
 	beforeEach(function() {
 		cleanupStub = sinon.stub;
 		resizeCallbackMakerStub = sinon.stub().returns({ cleanup: cleanupStub });
+		crossDomainStub = sinon.stub().returns(true);
 	});
 
 	it('should render an iframe to the screen', function() {
@@ -41,7 +43,7 @@ describe('react-valence-ui-iframe', function() {
 	});
 
 	it('should call resizeCallbackMaker if resizeCallback is provided', function() {
-		ReactIframe.__Rewire__('ResizeCallbackMaker', { startResizingCallbacks: resizeCallbackMakerStub });
+		ReactIframe.__Rewire__('ResizeCallbackMaker', { startResizingCallbacks: resizeCallbackMakerStub, crossDomain: crossDomainStub });
 		var callback = sinon.stub();
 		var elem = TestUtils.renderIntoDocument(<ReactIframe resizeCallback={callback}/>);
 		elem.handleOnLoad();
@@ -50,7 +52,7 @@ describe('react-valence-ui-iframe', function() {
 	});
 
 	it('should set the "cleanup" state to the variable returned by the resizeCallbackMaker', function() {
-		ReactIframe.__Rewire__('ResizeCallbackMaker', { startResizingCallbacks: resizeCallbackMakerStub });
+		ReactIframe.__Rewire__('ResizeCallbackMaker', { startResizingCallbacks: resizeCallbackMakerStub, crossDomain: crossDomainStub });
 		var callback = sinon.stub();
 		var elem = TestUtils.renderIntoDocument(<ReactIframe resizeCallback={callback}/>);
 		elem.handleOnLoad();
@@ -108,5 +110,14 @@ describe('react-valence-ui-iframe', function() {
 		);
 
 		expect(React.findDOMNode(wrapper).style['overflow-y']).toBe(iframeOverflowY);
+	});
+
+	it('should call updateNavbarStyle on componentDidUpdate', function() {
+		var updateNavbarStyle = sinon.stub(ReactIframe.prototype.__reactAutoBindMap, 'updateNavbarStyle');
+		ReactIframe.__Rewire__('ResizeCallbackMaker', { startResizingCallbacks: resizeCallbackMakerStub, crossDomain: crossDomainStub });
+		var elem = TestUtils.renderIntoDocument(<ReactIframe />);
+		elem.componentDidUpdate();
+
+		expect(updateNavbarStyle.called).toBe(true);
 	});
 });
