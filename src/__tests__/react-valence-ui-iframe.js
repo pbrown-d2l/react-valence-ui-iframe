@@ -8,12 +8,18 @@ var React = require('react/addons'),
 describe('react-valence-ui-iframe', function() {
 	var resizeCallbackMakerStub,
 		cleanupStub,
-		crossDomainStub;
+		crossDomainStub,
+		sandbox;
 
 	beforeEach(function() {
+		sandbox = sinon.sandbox.create();
 		cleanupStub = sinon.stub;
 		resizeCallbackMakerStub = sinon.stub().returns({ cleanup: cleanupStub });
 		crossDomainStub = sinon.stub().returns(true);
+	});
+
+	afterEach(function() {
+		sandbox.restore();
 	});
 
 	it('should render an iframe to the screen', function() {
@@ -119,5 +125,56 @@ describe('react-valence-ui-iframe', function() {
 		elem.componentDidUpdate();
 
 		expect(updateNavbarStyle.called).toBe(true);
+		updateNavbarStyle.restore();
+	});
+
+	it('should add css to iframe that is not cross-domain', function() {
+		var headElement = document.createElement('head');
+		var iframe = {contentWindow: {
+			location: { href: 'http://www.example.com' },
+			document: {
+				head: headElement
+			}
+		}};
+		sandbox.stub(React, `findDOMNode`).returns(iframe);
+		crossDomainStub = sinon.stub().returns(false);
+		ReactIframe.__Rewire__('ResizeCallbackMaker', { startResizingCallbacks: resizeCallbackMakerStub, crossDomain: crossDomainStub });
+		var elem = TestUtils.renderIntoDocument(<ReactIframe />);
+		elem.updateNavbarStyle();
+
+		var cssStyle = '<style type="text/css">.d2l-navbar, .d2l-minibar-placeholder {display:none;}</style>';
+		expect(iframe.contentWindow.document.head.innerHTML).toBe(cssStyle);
+	});
+
+	it('should not add css to iframe that is cross-domain', function() {
+		var headElement = document.createElement('head');
+		var iframe = {contentWindow: {
+			location: { href: 'http://www.example.com' },
+			document: {
+				head: headElement
+			}
+		}};
+		sandbox.stub(React, `findDOMNode`).returns(iframe);
+		ReactIframe.__Rewire__('ResizeCallbackMaker', { startResizingCallbacks: resizeCallbackMakerStub, crossDomain: crossDomainStub });
+		var elem = TestUtils.renderIntoDocument(<ReactIframe />);
+		elem.updateNavbarStyle();
+
+		expect(iframe.contentWindow.document.head.innerHTML).toBe('');
+	});
+	it('should set iframeLocation to new iframe location after navbar update', function() {
+		var headElement = document.createElement('head');
+		var iframe = {contentWindow: {
+			location: { href: 'http://www.example.com' },
+			document: {
+				head: headElement
+			}
+		}};
+		sandbox.stub(React, `findDOMNode`).returns(iframe);
+		crossDomainStub = sinon.stub().returns(false);
+		ReactIframe.__Rewire__('ResizeCallbackMaker', { startResizingCallbacks: resizeCallbackMakerStub, crossDomain: crossDomainStub });
+		var elem = TestUtils.renderIntoDocument(<ReactIframe />);
+		elem.updateNavbarStyle();
+
+		expect(elem.state.iframeLocation).toBe( 'http://www.example.com');
 	});
 });
