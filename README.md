@@ -38,3 +38,5 @@ progressCallback ( progress, accuracy )
 ## Usage Example:
 
 - https://github.com/Brightspace/activity-viewer
+
+**Note:** Iframe Brightspace pages that contain a navbar and/or minbar (such as quizzes and surveys) will have these removed in the ResizingIframe.
