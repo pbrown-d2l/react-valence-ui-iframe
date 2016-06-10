@@ -142,7 +142,7 @@ describe('react-valence-ui-iframe', function() {
 		var elem = TestUtils.renderIntoDocument(<ReactIframe />);
 		elem.updateNavbarStyle();
 
-		var cssStyle = '<style type="text/css">.d2l-navbar, .d2l-minibar-placeholder {display:none;}</style>';
+		var cssStyle = '<style type="text/css">d2l-navigation, .d2l-navbar, .d2l-minibar-placeholder {display:none;}</style>';
 		expect(iframe.contentWindow.document.head.innerHTML).toBe(cssStyle);
 	});
 

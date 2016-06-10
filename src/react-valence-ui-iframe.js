@@ -59,7 +59,7 @@ var ResizingIframe = React.createClass({
 			if (iframeDocument) {
 				// Overwrite css style for navbar and minibar when page is rendered
 				var iframeStyle = document.createElement('style');
-				iframeStyle.innerHTML = '.d2l-navbar, .d2l-minibar-placeholder {display:none;}';
+				iframeStyle.innerHTML = 'd2l-navigation, .d2l-navbar, .d2l-minibar-placeholder {display:none;}';
 				iframeStyle.type = 'text/css';
 				var head = iframeDocument.head;
 				if (head) {
