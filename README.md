@@ -40,3 +40,12 @@ progressCallback ( progress, accuracy )
 - https://github.com/Brightspace/activity-viewer
 
 **Note:** Iframe Brightspace pages that contain a navbar and/or minbar (such as quizzes and surveys) will have these removed in the ResizingIframe.
+
+### Bump version ###
+
+```BASH
+$ # npm help 1 version
+$ # npm help 7 semver
+$ npm version [major|minor|patch|premajor|preminor|prepatch|prerelease] -m "chore(version) bump %s"
+$ git push upstream master --tags
+```
