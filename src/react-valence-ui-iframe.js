@@ -19,9 +19,6 @@ var ResizingIframe = React.createClass({
 	componentDidMount: function() {
 		this.updateProgress(0);
 	},
-	componentDidUpdate: function() {
-		this.updateNavbarStyle();
-	},
 	updateProgress: function(progress) {
 		if (this.props.progressCallback) {
 			this.props.progressCallback(progress, 'none');
@@ -48,29 +45,6 @@ var ResizingIframe = React.createClass({
 			}
 		}
 	},
-	updateNavbarStyle: function() {
-		// Hide the navbar and minibar from within the iframe if it is rendered
-		var iframe = React.findDOMNode(this.refs.iframe);
-		// Should only manipulate the iframe if it is not cross domain and the iframe location has changed
-		if (!ResizeCallbackMaker.crossDomain(iframe) &&
-		(this.state.iframeLocation !== iframe.contentWindow.location.href)) {
-
-			var iframeDocument = iframe.contentWindow.document;
-			if (iframeDocument) {
-				// Overwrite css style for navbar and minibar when page is rendered
-				var iframeStyle = document.createElement('style');
-				iframeStyle.innerHTML = 'd2l-navigation, .d2l-navbar, .d2l-minibar-placeholder {display:none;}';
-				iframeStyle.type = 'text/css';
-				var head = iframeDocument.head;
-				if (head) {
-					head.appendChild(iframeStyle);
-				}
-			}
-			this.setState({
-				iframeLocation: iframe.contentWindow.location.href
-			});
-		}
-	},
 	componentWillUnmount: function() {
 		if (this.state.iframeCleanup) {
 			this.state.iframeCleanup();
@@ -81,10 +55,12 @@ var ResizingIframe = React.createClass({
 			overflowY: this.state.iframeOverflowY || ''
 		};
 
+		// HACK! HACK! HACK! d2l content looks for d2l_navbar
 		return (
 			<div
 				className="resizing-iframe-container"
 			>
+				<div id="d2l_navbar" className="vui-offscreen" />
 				<iframe
 					ref="iframe"
 					onLoad={this.handleOnLoad}
