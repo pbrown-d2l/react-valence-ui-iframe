@@ -62,12 +62,12 @@ var ResizingIframe = React.createClass({
 			overflowY: this.state.iframeOverflowY || ''
 		};
 
-		// HACK! HACK! HACK! d2l content looks for d2l_navbar
+		// HACK! HACK! HACK! d2l content looks for d2l_navbar (or d2l-navigation if on daylight)
 		return (
 			<div
 				className="resizing-iframe-container"
 			>
-				<div id="d2l_navbar" className="vui-offscreen" />
+				<div id="d2l_navbar" className="vui-offscreen" dangerouslySetInnerHTML={{__html: '<d2l-navigation duplicate="true"></d2l-navigation>'}}></div>
 				<iframe
 					ref="iframe"
 					onLoad={this.handleOnLoad}

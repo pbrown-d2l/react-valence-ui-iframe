@@ -141,5 +141,14 @@ describe('react-valence-ui-iframe', function() {
 
 		expect(wrapper.length).toBe(1);
 		expect(React.findDOMNode(wrapper[0]).id).toBe('d2l_navbar');
-	})
+	});
+
+	it('should render a d2l-navigation element', function() {
+		var elem = TestUtils.renderIntoDocument(
+			<ReactIframe />
+		);
+
+		// scryRenderedDOMComponentsWithTag wouldn't pick up the dangerouslySetInnerHTML inserted polymer component
+		expect(React.findDOMNode(elem).innerHTML.indexOf('<d2l-navigation ')).toBeGreaterThan(-1);
+	});
 });
