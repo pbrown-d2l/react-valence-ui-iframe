@@ -1,6 +1,6 @@
 {
   "name": "react-valence-ui-iframe",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "An iframe wrapper which provides callbacks for when the iframe has loaded and callbacks providing the size of the iframe's contents if we can figure them out",
   "main": "src/react-valence-ui-iframe.js",
   "scripts": {
