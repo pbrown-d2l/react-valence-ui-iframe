@@ -13,7 +13,7 @@ describe('react-valence-ui-iframe', function() {
 
 	beforeEach(function() {
 		sandbox = sinon.sandbox.create();
-		cleanupStub = sinon.stub;
+		cleanupStub = sinon.stub();
 		resizeCallbackMakerStub = sinon.stub().returns({ cleanup: cleanupStub });
 		crossDomainStub = sinon.stub().returns(true);
 	});
@@ -64,6 +64,18 @@ describe('react-valence-ui-iframe', function() {
 		elem.handleOnLoad();
 
 		expect(elem.state.iframeCleanup).toBe(cleanupStub);
+	});
+
+	it('should call the "cleanup" state function on load if one exists before setting the new one', function() {
+		ReactIframe.__Rewire__('ResizeCallbackMaker', { startResizingCallbacks: resizeCallbackMakerStub, crossDomain: crossDomainStub });
+		var callback = sinon.stub();
+		var elem = TestUtils.renderIntoDocument(<ReactIframe resizeCallback={callback}/>);
+
+		elem.handleOnLoad();
+		expect(cleanupStub.called).toBe(false);
+
+		elem.handleOnLoad();
+		expect(cleanupStub.called).toBe(true);
 	});
 
 	it('callbackWrapper should set the iframeOverflowY value', function() {
@@ -118,63 +130,16 @@ describe('react-valence-ui-iframe', function() {
 		expect(React.findDOMNode(wrapper).style['overflow-y']).toBe(iframeOverflowY);
 	});
 
-	it('should call updateNavbarStyle on componentDidUpdate', function() {
-		var updateNavbarStyle = sinon.stub(ReactIframe.prototype.__reactAutoBindMap, 'updateNavbarStyle');
-		ReactIframe.__Rewire__('ResizeCallbackMaker', { startResizingCallbacks: resizeCallbackMakerStub, crossDomain: crossDomainStub });
-		var elem = TestUtils.renderIntoDocument(<ReactIframe />);
-		elem.componentDidUpdate();
+	it('should render a d2l_navbar element offscreen', function() {
+		var elem = TestUtils.renderIntoDocument(
+			<ReactIframe />
+		);
+		var wrapper = TestUtils.scryRenderedDOMComponentsWithClass(
+			elem,
+			'vui-offscreen'
+		);
 
-		expect(updateNavbarStyle.called).toBe(true);
-		updateNavbarStyle.restore();
-	});
-
-	it('should add css to iframe that is not cross-domain', function() {
-		var headElement = document.createElement('head');
-		var iframe = {contentWindow: {
-			location: { href: 'http://www.example.com' },
-			document: {
-				head: headElement
-			}
-		}};
-		sandbox.stub(React, `findDOMNode`).returns(iframe);
-		crossDomainStub = sinon.stub().returns(false);
-		ReactIframe.__Rewire__('ResizeCallbackMaker', { startResizingCallbacks: resizeCallbackMakerStub, crossDomain: crossDomainStub });
-		var elem = TestUtils.renderIntoDocument(<ReactIframe />);
-		elem.updateNavbarStyle();
-
-		var cssStyle = '<style type="text/css">d2l-navigation, .d2l-navbar, .d2l-minibar-placeholder {display:none;}</style>';
-		expect(iframe.contentWindow.document.head.innerHTML).toBe(cssStyle);
-	});
-
-	it('should not add css to iframe that is cross-domain', function() {
-		var headElement = document.createElement('head');
-		var iframe = {contentWindow: {
-			location: { href: 'http://www.example.com' },
-			document: {
-				head: headElement
-			}
-		}};
-		sandbox.stub(React, `findDOMNode`).returns(iframe);
-		ReactIframe.__Rewire__('ResizeCallbackMaker', { startResizingCallbacks: resizeCallbackMakerStub, crossDomain: crossDomainStub });
-		var elem = TestUtils.renderIntoDocument(<ReactIframe />);
-		elem.updateNavbarStyle();
-
-		expect(iframe.contentWindow.document.head.innerHTML).toBe('');
-	});
-	it('should set iframeLocation to new iframe location after navbar update', function() {
-		var headElement = document.createElement('head');
-		var iframe = {contentWindow: {
-			location: { href: 'http://www.example.com' },
-			document: {
-				head: headElement
-			}
-		}};
-		sandbox.stub(React, `findDOMNode`).returns(iframe);
-		crossDomainStub = sinon.stub().returns(false);
-		ReactIframe.__Rewire__('ResizeCallbackMaker', { startResizingCallbacks: resizeCallbackMakerStub, crossDomain: crossDomainStub });
-		var elem = TestUtils.renderIntoDocument(<ReactIframe />);
-		elem.updateNavbarStyle();
-
-		expect(elem.state.iframeLocation).toBe( 'http://www.example.com');
-	});
+		expect(wrapper.length).toBe(1);
+		expect(React.findDOMNode(wrapper[0]).id).toBe('d2l_navbar');
+	})
 });
