@@ -66,7 +66,6 @@ describe('react-valence-ui-iframe', function() {
 		expect(elem.state.iframeCleanup).toBe(null);
 	});
 
-
 	it('should set the "cleanup" state to the variable returned by the resizeCallbackMaker', function() {
 		ReactIframe.__Rewire__('ResizeCallbackMaker', { startResizingCallbacks: resizeCallbackMakerStub, crossDomain: crossDomainStub });
 		var callback = sinon.stub();
