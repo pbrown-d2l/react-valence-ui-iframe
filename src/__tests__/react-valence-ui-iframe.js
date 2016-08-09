@@ -57,6 +57,16 @@ describe('react-valence-ui-iframe', function() {
 		expect(resizeCallbackMakerStub.called).toBe(true);
 	});
 
+	it('should not throw an error if the ResizeCallbackMaker startResizingCallbacks does not return a result', function() {
+		ReactIframe.__Rewire__('ResizeCallbackMaker', { startResizingCallbacks: sinon.stub(), crossDomain: crossDomainStub });
+		var callback = sinon.stub();
+		var elem = TestUtils.renderIntoDocument(<ReactIframe resizeCallback={callback}/>);
+		elem.handleOnLoad();
+
+		expect(elem.state.iframeCleanup).toBe(null);
+	});
+
+
 	it('should set the "cleanup" state to the variable returned by the resizeCallbackMaker', function() {
 		ReactIframe.__Rewire__('ResizeCallbackMaker', { startResizingCallbacks: resizeCallbackMakerStub, crossDomain: crossDomainStub });
 		var callback = sinon.stub();
