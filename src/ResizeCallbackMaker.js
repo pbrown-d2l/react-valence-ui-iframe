@@ -115,6 +115,11 @@ ResizeCallbackMaker.prototype.startResizingCallbacks = function(iframe, callback
 	// ios has problems with scrolling when tapping inside an iframe, so we won't try to size them bigger than the screen
 	if (this.isIos(navigator)) {
 		callback(null, null);
+
+		return {
+			security: 'crossDomain',
+			cleanup: null
+		};
 	} else if (this.crossDomain(iframe)) {
 		// The content is on another domain. If it includes /d2l/common/iframe/iframe-client.js, it can tell us its height
 		var self = this;

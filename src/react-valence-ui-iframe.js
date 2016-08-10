@@ -41,7 +41,7 @@ var ResizingIframe = React.createClass({
 			}
 			var result = ResizeCallbackMaker.startResizingCallbacks(React.findDOMNode(this.refs.iframe), this.callbackWrapper);
 
-			if (result.cleanup) {
+			if (result && result.cleanup) {
 				this.setState({
 					iframeCleanup: result.cleanup
 				});

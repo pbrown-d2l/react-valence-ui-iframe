@@ -35,11 +35,23 @@ describe('react-valence-ui-iframe', function() {
 			).toThrow('no callback provided');
 		});
 
-		it('should call the callback with null,null if the platform is ios', function() {
-			sandbox.stub(ResizeCallbackMaker, 'isIos').returns(true);
+		describe('isIos', function() {
+			beforeEach(function() {
+				sandbox.stub(ResizeCallbackMaker, 'isIos').returns(true);
+			});
 
-			ResizeCallbackMaker.startResizingCallbacks(iframe, callback);
-			expect(callback.calledWith(null, null)).toBe(true);
+			it('should call the callback with null, null', function() {
+				ResizeCallbackMaker.startResizingCallbacks(iframe, callback);
+				expect(callback.calledWith(null, null)).toBe(true);
+			});
+
+			it('should return the proper values', function() {
+				sandbox.stub(ResizeCallbackMaker, 'requestIframeSize');
+
+				var returnVal = ResizeCallbackMaker.startResizingCallbacks(iframe, callback);
+				expect(returnVal.security).toBe('crossDomain');
+				expect(returnVal.cleanup === null).toBe(true);
+			});
 		});
 
 		describe('crossDomain', function() {
