@@ -139,25 +139,15 @@ describe('react-valence-ui-iframe', function() {
 		expect(React.findDOMNode(wrapper).style['overflow-y']).toBe(iframeOverflowY);
 	});
 
-	it('should render a d2l_navbar element offscreen', function() {
+	it('should render a d2l-suppress-nav element offscreen', function() {
 		var elem = TestUtils.renderIntoDocument(
 			<ReactIframe />
 		);
 		var wrapper = TestUtils.scryRenderedDOMComponentsWithClass(
 			elem,
-			'vui-offscreen'
+			'vui-offscreen d2l-suppress-nav'
 		);
 
 		expect(wrapper.length).toBe(1);
-		expect(React.findDOMNode(wrapper[0]).id).toBe('d2l_navbar');
-	});
-
-	it('should render a d2l-navigation element', function() {
-		var elem = TestUtils.renderIntoDocument(
-			<ReactIframe />
-		);
-
-		// scryRenderedDOMComponentsWithTag wouldn't pick up the dangerouslySetInnerHTML inserted polymer component
-		expect(React.findDOMNode(elem).innerHTML.indexOf('<d2l-navigation ')).toBeGreaterThan(-1);
 	});
 });
