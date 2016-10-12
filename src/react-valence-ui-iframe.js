@@ -67,7 +67,7 @@ var ResizingIframe = React.createClass({
 			<div
 				className="resizing-iframe-container"
 			>
-				<div id="d2l_navbar" className="vui-offscreen" dangerouslySetInnerHTML={{__html: '<d2l-navigation duplicate="true"></d2l-navigation>'}}></div>
+				<div className="vui-offscreen d2l-suppress-nav"></div>
 				<iframe
 					ref="iframe"
 					onLoad={this.handleOnLoad}
