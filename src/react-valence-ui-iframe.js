@@ -1,6 +1,7 @@
 'use strict';
 
 var React = require('react'),
+	ReactDOM = require( 'react-dom' ),
 	ResizeCallbackMaker = require('./ResizeCallbackMaker');
 
 var ResizingIframe = React.createClass({
@@ -39,7 +40,7 @@ var ResizingIframe = React.createClass({
 			if (this.state.iframeCleanup) {
 				this.state.iframeCleanup();
 			}
-			var result = ResizeCallbackMaker.startResizingCallbacks(React.findDOMNode(this.refs.iframe), this.callbackWrapper);
+			var result = ResizeCallbackMaker.startResizingCallbacks(ReactDOM.findDOMNode(this.refs.iframe), this.callbackWrapper);
 
 			if (result && result.cleanup) {
 				this.setState({
