@@ -71,6 +71,7 @@ var ResizingIframe = React.createClass({
 				<div id="d2l_navbar" className="vui-offscreen d2l-suppress-nav"></div>
 				<iframe
 					ref="iframe"
+					data-suppressNav='true'
 					onLoad={this.handleOnLoad}
 					src={this.props.src}
 					style={style}
