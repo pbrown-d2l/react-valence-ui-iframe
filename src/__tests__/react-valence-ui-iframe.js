@@ -1,7 +1,8 @@
 'use strict';
 
-var React = require('react/addons'),
-	TestUtils = React.addons.TestUtils,
+var React = require('react'), //eslint-disable-line no-unused-vars
+	ReactDOM = require( 'react-dom' ),
+	TestUtils = require( 'react-addons-test-utils' ),
 	ReactIframe = require('../react-valence-ui-iframe.js'),
 	sinon = require('sinon');
 
@@ -136,7 +137,7 @@ describe('react-valence-ui-iframe', function() {
 			'resizing-iframe'
 		);
 
-		expect(React.findDOMNode(wrapper).style['overflow-y']).toBe(iframeOverflowY);
+		expect(ReactDOM.findDOMNode(wrapper).style['overflow-y']).toBe(iframeOverflowY);
 	});
 
 	it('should render a d2l-suppress-nav element offscreen', function() {
