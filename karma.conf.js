@@ -3,7 +3,7 @@
 var isDev = process.env.NODE_ENV === 'development';
 
 var babelify = ['babelify', {
-	stage: 0,
+	presets: [ 'es2015', 'react' ],
 	plugins: ['babel-plugin-rewire']
 }];
 var istanbul = ['browserify-istanbul', {
