@@ -74,6 +74,7 @@ var ResizingIframe = React.createClass({
 					src={this.props.src}
 					style={style}
 					className="resizing-iframe"
+					allowFullScreen
 				>
 				</iframe>
 			</div>
