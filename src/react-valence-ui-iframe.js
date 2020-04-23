@@ -2,7 +2,8 @@
 
 var React = require('react'),
 	ReactDOM = require( 'react-dom' ),
-	ResizeCallbackMaker = require('./ResizeCallbackMaker');
+	ResizeCallbackMaker = require('./ResizeCallbackMaker'),
+	litIFrame = require('./LitIFrame.js');
 
 var ResizingIframe = React.createClass({
 	propTypes: {
@@ -69,14 +70,16 @@ var ResizingIframe = React.createClass({
 				className="resizing-iframe-container"
 			>
 				<div id="d2l_navbar" className="vui-offscreen d2l-suppress-nav"></div>
-				<iframe
+				<lit-iframe
 					ref="iframe"
 					onLoad={this.handleOnLoad}
 					src={this.props.src}
 					style={style}
 					className="resizing-iframe"
+					allowMicrophone="true"
+					allowCamera="true"
 				>
-				</iframe>
+				</lit-iframe>
 			</div>
 		);
 	}
