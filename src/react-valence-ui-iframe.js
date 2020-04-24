@@ -17,6 +17,7 @@ var ResizingIframe = React.createClass({
 	},
 	componentWillUnmount() {
 		this.frame.removeEventListener('d2l-iframe-wrapper-for-react-load', this.handleOnLoad);
+		this.frame.removeEventListener('d2l-iframe-wrapper-for-react-resize', this.callbackWrapper);
 	},
 	updateProgress: function(progress) {
 		if (this.props.progressCallback) {
