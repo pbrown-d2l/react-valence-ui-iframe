@@ -1,5 +1,3 @@
-'use strict';
-
 var ResizeCallbackMaker = require('../ResizeCallbackMaker.js'),
 	sinon = require('sinon');
 
@@ -337,7 +335,7 @@ describe('react-valence-ui-iframe', function() {
 					style: {}
 				}}}
 			};
-			let props = { toggle: toggle, callback: callback, iframe: testIframe };
+			const props = { toggle: toggle, callback: callback, iframe: testIframe };
 			ResizeCallbackMaker.doCallback(props);
 			props.toggle = false;
 			expect(callback.calledWith(height, null)).toBe(true);

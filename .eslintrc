@@ -1,3 +1,10 @@
 {
-  "extends": "brightspace/react-config"
+  "extends": [
+		"brightspace/react-config"
+  ],
+  "parser": "babel-eslint",
+  "parserOptions": {
+		"ecmaVersion": 6,
+		"sourceType": "module"
+	}
 }
