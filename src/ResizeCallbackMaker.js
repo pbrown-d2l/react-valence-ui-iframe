@@ -1,4 +1,3 @@
-'use strict';
 // TODO: someone should probably go and rewrite an implementation of /d2l/common/iframe/iframe-client.js without jquery
 // Based on: .../lp/framework/web/D2L.LP.Web.UI/Common/Controls/IFrame/ClassInitializer.js
 

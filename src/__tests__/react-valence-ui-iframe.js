@@ -1,8 +1,6 @@
-'use strict';
-
 var React = require('react'), //eslint-disable-line no-unused-vars
-	ReactDOM = require( 'react-dom' ),
-	TestUtils = require( 'react-addons-test-utils' ),
+	ReactDOM = require('react-dom'),
+	TestUtils = require('react-addons-test-utils'),
 	ReactIframe = require('../react-valence-ui-iframe.js'),
 	sinon = require('sinon');
 
