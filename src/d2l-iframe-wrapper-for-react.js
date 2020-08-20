@@ -62,7 +62,7 @@ class IFrame extends LitElement {
 			<iframe
 				class="resizing-iframe"
 				src=${this.src}
-				allow="camera *; microphone *; display-capture *; encrypted-media *;"
+				allow="camera *; microphone *; display-capture *; encrypted-media *; fullscreen *;"
 				@load=${this._onFrameLoad}}
 				style=${styleMap(style)}
 			></iframe>
